@@ -35,9 +35,17 @@ public class NoteControllerV1 {
         return result;
     }
 
+    @RequestMapping(value = "/edit", method = {RequestMethod.GET})
+    public ModelAndView getNoteForEdit(@NotEmpty @RequestParam(value="id") String id) throws NoteNotFoundException {
+        UUID uuid = UUID.fromString(id);
+        ModelAndView result = new ModelAndView("notes/updatesNotes");
+        result.addObject("note", noteMapper.toNoteResponse(noteService.getById(uuid)));
+        return result;
+    }
+
     @RequestMapping(value = "/create", method = {RequestMethod.POST})
     public ModelAndView createNote(
-            @RequestParam(value="title") @Size(min = 1, max = 20) String title,
+            @RequestParam(value="title") @Size(min = 1, max = 250) String title,
             @RequestParam(value="content") @NotBlank String content) {
         NoteDto dto = new NoteDto();
         dto.setTitle(title);
@@ -48,7 +56,7 @@ public class NoteControllerV1 {
 
     @RequestMapping(value = "/update", method = {RequestMethod.POST})
     public ModelAndView updateNote(
-            @NotNull @RequestParam(value="id") String id,
+            @NotEmpty @RequestParam(value="id") String id,
             @Size(min = 1, max = 250) @RequestParam(value="title") String title,
             @NotEmpty @RequestParam(value="content") String content) throws NoteNotFoundException {
         NoteDto dto = new NoteDto();

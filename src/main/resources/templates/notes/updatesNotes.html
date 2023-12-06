@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="/V1/notes/update" method="post">
+    <div>
+        <label for="idForUpdate">Id:</label>
+        <input type="text" name="id" id="idForUpdate" th:value="${note.id}" contenteditable="false"/>
+    </div>
+
+    <div>
+        <label for="titleForUpdate">Title:</label>
+        <input type="text" name="title" id="titleForUpdate" th:value="${note.title}"/>
+    </div>
+
+    <div>
+        <label for="contentForUpdate">Content:</label>
+        <textarea name="content" id="contentForUpdate" cols="30" rows="10" th:text="${note.content}"></textarea>
+    </div>
+
+    <div>
+        <button type="submit">Send</button>
+    </div>
+</form>
+</body>
+</html>

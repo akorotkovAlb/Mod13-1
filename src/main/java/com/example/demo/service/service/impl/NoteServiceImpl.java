@@ -25,7 +25,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public List<NoteDto> listAll() {
-        return noteMapper.toNoteDtos(noteRepository.getAll());
+        return noteMapper.toNoteDtos(noteRepository.findAll());
     }
 
     @Override
@@ -58,7 +58,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public NoteDto getById(UUID id) throws NoteNotFoundException {
-        Optional<NoteEntity> optionalNote = noteRepository.getById(id);
+        Optional<NoteEntity> optionalNote = noteRepository.findById(id);
         if (optionalNote.isPresent()) {
             return noteMapper.toNoteDto(optionalNote.get());
         } else {

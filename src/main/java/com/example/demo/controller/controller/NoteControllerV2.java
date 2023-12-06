@@ -80,7 +80,7 @@ public class NoteControllerV2 {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void updateNoteFromRequestParams(
             @RequestHeader(value = "test", required = false) String testValue,
-            @CookieValue(value = "cookies", required = false) String cookies,
+            @CookieValue(value = "qqqq", required = false) String cookies,
             @PathVariable("id") UUID id,
             @RequestParam("title") @Valid @Size(min = 3, max = 250) String title,
             @RequestParam("content") @Valid @NotBlank String content) throws NoteNotFoundException {

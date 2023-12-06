@@ -1,6 +1,7 @@
 package com.example.demo.data.repository;
 
 import com.example.demo.data.entity.NoteEntity;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,11 +16,11 @@ public class NoteRepository {
 
     private final List<NoteEntity> noteList = new ArrayList<>();
 
-    public List<NoteEntity> getAll() {
+    public List<NoteEntity> findAll () {
         return this.noteList;
     }
 
-    public Optional<NoteEntity> getById(UUID id) {
+    public Optional<NoteEntity> findById (UUID id) {
         return this.noteList.stream()
                 .filter(note -> note.getId().equals(id))
                 .findFirst();
