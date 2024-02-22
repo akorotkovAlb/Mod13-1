@@ -36,10 +36,9 @@ public class NoteControllerV1 {
     }
 
     @RequestMapping(value = "/edit", method = {RequestMethod.GET})
-    public ModelAndView getNoteForEdit(@NotEmpty @RequestParam(value="id") String id) throws NoteNotFoundException {
-        UUID uuid = UUID.fromString(id);
+    public ModelAndView getNoteForEdit(@NotNull @RequestParam(value="id") UUID id) throws NoteNotFoundException {
         ModelAndView result = new ModelAndView("notes/updatesNotes");
-        result.addObject("note", noteMapper.toNoteResponse(noteService.getById(uuid)));
+        result.addObject("note", noteMapper.toNoteResponse(noteService.getById(id)));
         return result;
     }
 
@@ -56,11 +55,11 @@ public class NoteControllerV1 {
 
     @RequestMapping(value = "/update", method = {RequestMethod.POST})
     public ModelAndView updateNote(
-            @NotEmpty @RequestParam(value="id") String id,
+            @NotNull @RequestParam(value="id") UUID id,
             @Size(min = 1, max = 250) @RequestParam(value="title") String title,
             @NotEmpty @RequestParam(value="content") String content) throws NoteNotFoundException {
         NoteDto dto = new NoteDto();
-        dto.setId(UUID.fromString(id));
+        dto.setId(id);
         dto.setTitle(title);
         dto.setContent(content);
         noteService.update(dto);
@@ -69,8 +68,8 @@ public class NoteControllerV1 {
 
     @DeleteMapping("/delete")
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
-    public ModelAndView deleteNoteById(@Valid @NotNull @RequestParam(value="id") String id) throws NoteNotFoundException {
-        noteService.deleteById(UUID.fromString(id));
+    public ModelAndView deleteNoteById(@Valid @NotNull @RequestParam(value="id") UUID id) throws NoteNotFoundException {
+        noteService.deleteById(id);
         return noteList();
     }
 }

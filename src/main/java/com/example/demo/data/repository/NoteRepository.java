@@ -1,7 +1,6 @@
 package com.example.demo.data.repository;
 
 import com.example.demo.data.entity.NoteEntity;
-import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

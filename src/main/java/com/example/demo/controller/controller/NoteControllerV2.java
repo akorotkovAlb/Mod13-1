@@ -7,6 +7,7 @@ import com.example.demo.service.dto.NoteDto;
 import com.example.demo.service.exception.NoteNotFoundException;
 import com.example.demo.service.mapper.NoteMapper;
 import com.example.demo.service.service.NoteService;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -41,7 +44,7 @@ import java.util.UUID;
 
 @Slf4j
 @Validated
-@Controller
+@RestController
 @RequestMapping("/V2/notes")
 public class NoteControllerV2 {
 
@@ -82,8 +85,8 @@ public class NoteControllerV2 {
             @RequestHeader(value = "test", required = false) String testValue,
             @CookieValue(value = "qqqq", required = false) String cookies,
             @PathVariable("id") UUID id,
-            @RequestParam("title") @Valid @Size(min = 3, max = 250) String title,
-            @RequestParam("content") @Valid @NotBlank String content) throws NoteNotFoundException {
+            @RequestParam(value = "title") @Size(min = 3, max = 250) String title,
+            @RequestParam("content") @NotBlank String content) throws NoteNotFoundException {
         log.info("header ==> {}", testValue);
         log.info("cookie ==> {}", cookies);
         NoteDto dto = new NoteDto();
@@ -117,9 +120,13 @@ public class NoteControllerV2 {
             throw new FileUploadException(String.format(UPLOAD_FILE_EXCEPTION_TEXT, file.getOriginalFilename()));
         }
         byte[] bytes = file.getBytes();
-        List<CreateNoteRequest> notes = Arrays.asList(objectMapper.readValue(bytes, CreateNoteRequest[].class));
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(noteMapper.toNoteResponses(noteService.addAll(noteMapper.requestsToNoteDtos(notes))));
+        try {
+            List<CreateNoteRequest> notes = Arrays.asList(objectMapper.readValue(bytes, CreateNoteRequest[].class));
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(noteMapper.toNoteResponses(noteService.addAll(noteMapper.requestsToNoteDtos(notes))));
+        } catch(JsonParseException e) {
+            throw new FileUploadException("Shame on you!");
+        }
     }
 }
